@@ -1,10 +1,8 @@
 package sg.edu.np.mad.madpractical5;
 
-import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -13,10 +11,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Random;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-public class MyDBHandler extends SQLiteOpenHelper {
+public class DatabaseHandler extends SQLiteOpenHelper {
 
     // static member variables to be declared before initializing in constructor, final means immutable
     // specify name of table, name of columns etc
@@ -37,18 +32,18 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private static final String TAG = "MyDBHandler";
 
     // Public method to provide access to the singleton instance
-    public static synchronized MyDBHandler getInstance(Context context) {
-        MyDBHandler instance = null; // Define instance variable locally
+    public static synchronized DatabaseHandler getInstance(Context context) {
+        DatabaseHandler instance = null; // Define instance variable locally
 
         if (instance == null) {
-            instance = new MyDBHandler(context.getApplicationContext());
+            instance = new DatabaseHandler(context.getApplicationContext());
         }
         return instance; // Return the local instance variable
     }
 
 
 
-    private MyDBHandler(Context context) {
+    private DatabaseHandler(Context context) {
         super(context, DB_name, null, DATABASE_VERSION);
     }
 

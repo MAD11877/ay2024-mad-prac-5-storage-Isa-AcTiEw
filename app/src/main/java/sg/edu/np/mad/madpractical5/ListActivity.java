@@ -1,7 +1,5 @@
 package sg.edu.np.mad.madpractical5;
 
-import static sg.edu.np.mad.madpractical5.UserAdapter.userList;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,7 +33,7 @@ public class ListActivity extends AppCompatActivity {
         });
 
 
-        MyDBHandler dbHandler = MyDBHandler.getInstance(ListActivity.this);
+        DatabaseHandler dbHandler = DatabaseHandler.getInstance(ListActivity.this);
         db = dbHandler.getWritableDatabase();
         listOfUsers = dbHandler.getAllUsers();
         UserAdapter userAdapter = new UserAdapter(listOfUsers, this);

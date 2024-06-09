@@ -13,8 +13,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
     SQLiteDatabase db;
     @Override
@@ -55,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         buttonFollow.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // get the text from button
-                MyDBHandler dbHandler = MyDBHandler.getInstance(MainActivity.this);
+                DatabaseHandler dbHandler = DatabaseHandler.getInstance(MainActivity.this);
                 db = dbHandler.getWritableDatabase();
                 // logic to handle different text (follow/unfollow), follow -> unfollow vice versa
                 String text = buttonFollow.getText().toString();
