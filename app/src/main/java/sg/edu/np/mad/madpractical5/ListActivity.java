@@ -28,14 +28,15 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.list_activity);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.parent), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
 
-        MyDBHandler dbHandler = new MyDBHandler(this,null,null,1);
+        MyDBHandler dbHandler = MyDBHandler.getInstance(ListActivity.this);
+        db = dbHandler.getWritableDatabase();
         listOfUsers = dbHandler.getAllUsers();
         UserAdapter userAdapter = new UserAdapter(listOfUsers, this);
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
@@ -74,6 +75,7 @@ public class ListActivity extends AppCompatActivity {
                 extras.putString("key1",user.getName());
                 extras.putString("key2",user.getDescription());
                 extras.putBoolean("key3",user.getFollowed());
+                extras.putInt("key4",user.getId());
 
                 ListToMain.putExtras(extras);
                 startActivity(ListToMain);

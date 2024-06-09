@@ -36,8 +36,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_FOLLOWED = "followed";
     private static final String TAG = "MyDBHandler";
 
-    public MyDBHandler(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    // Public method to provide access to the singleton instance
+    public static synchronized MyDBHandler getInstance(Context context) {
+        MyDBHandler instance = null; // Define instance variable locally
+
+        if (instance == null) {
+            instance = new MyDBHandler(context.getApplicationContext());
+        }
+        return instance; // Return the local instance variable
+    }
+
+
+
+    private MyDBHandler(Context context) {
+        super(context, DB_name, null, DATABASE_VERSION);
     }
 
 
@@ -69,13 +81,18 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 values.put(COLUMN_NAME,name);
                 values.put(COLUMN_DESCRIPTION,desc);
                 values.put(COLUMN_FOLLOWED,followed);
-                Log.i("Database Operation","Users table Created successfully");
+                db.insert(USERS,null,values);
+
+
+
 
 
 
 
 
             }
+            Log.i("Database Operation","Users table Created successfully");
+
 
 
 
@@ -83,6 +100,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
         } catch (SQLException e) {
             Log.i("Database Operation","Error" + e.getMessage());
+        }
+        finally {
+//            db.close();
         }
     }
 
@@ -93,7 +113,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         // if the version of db is newer drop the whole table and recreate it
         db.execSQL("DROP TABLE IF EXISTS " + USERS);
         onCreate(db);
-        db.close();
     }
 
     // read all the user data from the DB and store it in an ArrayList
@@ -119,7 +138,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
         }
         cursor.close();
-        db.close();
 
         return userList;
 
@@ -130,17 +148,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
     //  UPDATE user record
 
     // use the update function and specify the where argument and clause, cursors only for retieving data
-    public void updateUser(User user,boolean followed){
+    public void updateUser(User user){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        int newfollow = followed ? 1 : 0;
+        int newfollow = user.getFollowed() ? 1 : 0;
         values.put(COLUMN_FOLLOWED,newfollow);
         // match the id specified in the where clause, ? means the value will be provided later in our wher clause argument
         String where_Clause = "id=?";
         String[] where_Args = {String.valueOf(user.getId())};
-        db.update(USERS,values,where_Clause,where_Args);
-        db.close();
-
+        int rowsUpdated = db.update(USERS,values,where_Clause,where_Args);
+        if ( rowsUpdated> 0) {
+            Log.d("DB_UPDATE", "User updated successfully");
+        } else {
+            Log.d("DB_UPDATE", "Failed to update user");
+        }
     }
 
     @Override
